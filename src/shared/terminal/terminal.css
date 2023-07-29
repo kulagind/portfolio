@@ -1,0 +1,25 @@
+.terminal {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+
+.terminal__active-row {
+    display: flex;
+}
+
+.active-row__path {
+    flex: 0 0 auto;
+}
+
+.active-row__input {
+    flex: 1 0 auto;
+}
+
+.active-row__input input {
+    background: transparent;
+    outline: none;
+    width: 100%;
+}
