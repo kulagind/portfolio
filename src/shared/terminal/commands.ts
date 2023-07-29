@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { FileSystem } from '../../models/file-system';
 
 export interface CommandsHistory {
@@ -10,7 +11,7 @@ export const COMMANDS: {
   [key: string]: (
     fs: FileSystem,
     args: string[],
-  ) => string
+  ) => string | Promise<string>
 } = {
   'help': (fs, args) => {
     return `
@@ -30,7 +31,9 @@ export const COMMANDS: {
     fs.changeDir(args[0]);
     return '';
   },
-  'cat': (fs, args) => {
-    return '';
+  'cat': async (fs, args) => {
+    const path = fs.getContentRealPath(args[0]);
+    const {data} = await axios.get(path);
+    return data;
   },
 };

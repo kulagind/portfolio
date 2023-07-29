@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import './terminal.css';
 
 export function Input(props: {
@@ -13,6 +13,7 @@ export function Input(props: {
   const [command, setCommand] = useState('');
   const [autocompleteIndex, setAutocompleteIndex] = useState(-1);
   const [usedCommandIndex, setUsedCommandsIndex] = useState(-1);
+  const input = useRef();
 
   const MACHINE_NAME = 'user@localhost';
 
@@ -25,6 +26,15 @@ export function Input(props: {
     tmpArg.push(props.autocompletedCommand[index]);
     return `${tmpUtil.join(' ')}${tmpUtil.length ? ' ' : ''}${tmpArg.join('/')}`;
   }
+
+  useEffect(() => {
+    const listener = () => {
+      // @ts-ignore
+      input.current.focus();
+    };
+    window.addEventListener('keydown', listener);
+    return () => window.removeEventListener('keydown', listener);
+  });
 
   useEffect(() => {
     if (props.autocompletedCommand.length) {
@@ -103,7 +113,7 @@ export function Input(props: {
         {MACHINE_NAME}:{props.path}$&nbsp;
       </div>
       <div className="active-row__input">
-        <input onKeyDown={handleKeyDown} onChange={handleChange} value={command} />
+        <input ref={input} onKeyDown={handleKeyDown} onChange={handleChange} value={command} />
       </div>
     </div>
   );

@@ -28,11 +28,20 @@ export function Terminal(props: { fs: FileSystem }) {
           setHistory([]);
           break;
         case !!util:
-          output = util(
+          const result = util(
             props.fs, args,
           );
-          setPath(props.fs.getCurrentPath());
-          setHistory((prev) => [...prev, {command, output, key: v4()}]);
+          if (typeof result === 'string') {
+            output = result;
+            setPath(props.fs.getCurrentPath());
+            setHistory((prev) => [...prev, {command, output, key: v4()}]);
+          } else {
+            result.then((v) => {
+              output = v;
+              setPath(props.fs.getCurrentPath());
+              setHistory((prev) => [...prev, {command, output, key: v4()}]);
+            });
+          }
           break;
         default:
           output = `Command "${utilName}" doesn't exist<br>Type 'help' to know more`;

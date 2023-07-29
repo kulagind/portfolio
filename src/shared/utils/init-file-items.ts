@@ -27,6 +27,7 @@ export function initFileItems(): FileItem {
   const cv: FileItem = {
     isDir: false,
     name: 'CV',
+    realPath: '/files/cv',
     parent: user,
   };
   user.items?.push(cv);
@@ -48,6 +49,7 @@ export function initFileItems(): FileItem {
   const readme: FileItem = {
     isDir: false,
     name: 'README',
+    realPath: '/files/readme',
     parent: user,
   };
   user.items?.push(readme);
