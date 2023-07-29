@@ -14,17 +14,19 @@ export function Input(props: {
 
   const MACHINE_NAME = 'user@localhost';
 
+  function updatePath(prev: string, index = 0): string {
+    const tmpUtil = prev.split(' ');
+    const tmpArg = (
+      tmpUtil.pop() || ''
+    ).split('/');
+    tmpArg.pop();
+    tmpArg.push(props.autocompletedCommand[index]);
+    return `${tmpUtil.join(' ')}${tmpUtil.length ? ' ' : ''}${tmpArg.join('/')}`;
+  }
+
   useEffect(() => {
     if (props.autocompletedCommand.length) {
-      setCommand((prev) => {
-        const tmpUtil = prev.split(' ');
-        const tmpArg = (
-          tmpUtil.pop() || ''
-        ).split('/');
-        tmpArg.pop();
-        tmpArg.push(props.autocompletedCommand[0]);
-        return `${tmpUtil.join(' ')}${tmpUtil.length ? ' ' : ''}${tmpArg.join('/')}`;
-      });
+      setCommand(updatePath);
       setAutocompleteIndex(0);
     }
   }, [props.autocompletedCommand]);
@@ -47,28 +49,21 @@ export function Input(props: {
         break;
       case e.code === 'Tab':
         e.preventDefault();
-        if (autocompleteIndex >= 0) {
-          if (props.autocompletedCommand.length) {
-            let idx = autocompleteIndex + 1;
-            if (idx >= props.autocompletedCommand.length) {
-              idx = 0;
+        if (command.split(' ').length > 1) {
+          if (autocompleteIndex >= 0) {
+            if (props.autocompletedCommand.length) {
+              let idx = autocompleteIndex + 1;
+              if (idx >= props.autocompletedCommand.length) {
+                idx = 0;
+              }
+              setAutocompleteIndex(idx);
+              setCommand((prev) => {
+                return updatePath(prev, idx);
+              });
             }
-
-            setAutocompleteIndex(idx);
-            setCommand((prev) => {
-              const tmpUtil = prev.split(' ');
-              const tmpArg = (
-                tmpUtil.pop() || ''
-              ).split('/');
-              tmpArg.pop();
-              tmpArg.push(props.autocompletedCommand[idx]);
-              return `${tmpUtil.join(' ')}${tmpUtil.length
-                ? ' '
-                : ''}${tmpArg.join('/')}`;
-            });
+          } else {
+            props.autocomplete(command);
           }
-        } else {
-          props.autocomplete(command);
         }
         break;
       case e.code === 'KeyC' && e.ctrlKey:

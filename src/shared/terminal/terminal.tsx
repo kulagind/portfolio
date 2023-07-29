@@ -25,7 +25,7 @@ export function Terminal(props: { fs: FileSystem }) {
         );
         setPath(props.fs.getCurrentPath());
       } else {
-        output = `Command doesn't exist<br>Type 'help' to know more`;
+        output = `Command "${util}" doesn't exist<br>Type 'help' to know more`;
       }
     } catch (e) {
       if (e instanceof FsError) {

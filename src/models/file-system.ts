@@ -52,13 +52,17 @@ export class FileSystem {
   }
 
   changeDir(dir?: string): FileItem {
-    this.current = this.getEndpoint(dir);
+    const newDir = this.getEndpoint(dir);
+    if (!newDir.isDir) {
+      throw new FsError('Can\'t change directory to non-dir element');
+    }
     return this.current;
   }
 
   getAutocompleteOptions(dir?: string): string[] {
     const endpoint = this.getEndpoint(dir, {missError: true});
-    return endpoint.items?.map(i => i.name) ?? [];
+    const lastDir = dir?.split('/').pop() ?? '';
+    return endpoint.items?.filter(i => i.name.startsWith(lastDir)).map(i => i.name) ?? [];
   }
 
   private getEndpoint(dir?: string, options?: { missError: boolean }): FileItem {
