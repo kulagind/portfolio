@@ -13,7 +13,15 @@ export const COMMANDS: {
   ) => string
 } = {
   'help': (fs, args) => {
-    return 'help text';
+    return `
+      There is list of commands you can use, to navigate:<br>
+        help - show list of commands,<br>
+        ls [dir] - list of files,<br>
+        cd [dir] - change directory,<br>
+        cat [dir] - show file content,<br>
+        clear - clear workspace,<br>
+        history - list of previous commands
+    `;
   },
   'ls': (fs, args) => {
     return fs.getList(args[0]).map(i => `${i.name}${i.isDir ? '/' : ''}`).join('<br>') || '<-- Empty directory -->';
@@ -23,12 +31,6 @@ export const COMMANDS: {
     return '';
   },
   'cat': (fs, args) => {
-    return '';
-  },
-  'history': (fs, args) => {
-    return '';
-  },
-  'clear': (current, args) => {
     return '';
   },
 };

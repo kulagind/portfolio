@@ -8,9 +8,11 @@ export function Input(props: {
   executeCommand: (command: string, executable: string) => void,
   autocomplete: (executable: string) => void,
   autocompletedCommand: string[],
+  usedCommands: string[],
 }) {
   const [command, setCommand] = useState('');
   const [autocompleteIndex, setAutocompleteIndex] = useState(-1);
+  const [usedCommandIndex, setUsedCommandsIndex] = useState(-1);
 
   const MACHINE_NAME = 'user@localhost';
 
@@ -35,11 +37,23 @@ export function Input(props: {
     switch (true) {
       case e.code === 'ArrowUp':
         e.preventDefault();
+        let idxDown = usedCommandIndex - 1;
+        if (idxDown < 0) {
+          idxDown = props.usedCommands.length - 1;
+        }
+        setUsedCommandsIndex(idxDown);
+        setCommand(props.usedCommands[idxDown]);
         setAutocompleteIndex(-1);
         break;
       case e.code === 'ArrowDown':
         e.preventDefault();
-        console.log(e);
+        let idxUp = usedCommandIndex + 1;
+        if (idxUp >= props.usedCommands.length) {
+          idxUp = 0;
+        }
+        setUsedCommandsIndex(idxUp);
+        setCommand(props.usedCommands[idxUp]);
+        setAutocompleteIndex(-1);
         break;
       case e.code === 'Enter':
         e.preventDefault();

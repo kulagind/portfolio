@@ -56,6 +56,7 @@ export class FileSystem {
     if (!newDir.isDir) {
       throw new FsError('Can\'t change directory to non-dir element');
     }
+    this.current = newDir;
     return this.current;
   }
 
