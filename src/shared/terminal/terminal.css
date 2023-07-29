@@ -23,3 +23,7 @@
     outline: none;
     width: 100%;
 }
+
+.history {
+    opacity: 0.8;
+}
