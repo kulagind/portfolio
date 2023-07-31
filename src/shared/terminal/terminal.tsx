@@ -9,7 +9,7 @@ import { History } from './history';
 import { Input } from './input';
 import './terminal.css';
 
-export function Terminal(props: { fs: FileSystem, selftypingMessages?: string[] }) {
+export function Terminal(props: { fs: FileSystem, selftypingMessages: string[] }) {
   const [path, setPath] = useState(props.fs.getCurrentPath());
   const [history, setHistory] = useState<CommandsHistory[]>([]);
   const [autocompletedCommand, setAutocompletedCommand] = useState<string[]>([]);
