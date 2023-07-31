@@ -9,16 +9,16 @@ import { History } from './history';
 import { Input } from './input';
 import './terminal.css';
 
-export function Terminal(props: { fs: FileSystem }) {
+export function Terminal(props: { fs: FileSystem, selftypingMessages?: string[] }) {
   const [path, setPath] = useState(props.fs.getCurrentPath());
   const [history, setHistory] = useState<CommandsHistory[]>([]);
   const [autocompletedCommand, setAutocompletedCommand] = useState<string[]>([]);
   const [usedCommands, setUsedCommands] = useState<string[]>([]);
 
-  function handleCommand(command: string, executable: string) {
+  function handleCommand(command: string, executable: string = '') {
     let output = '';
     try {
-      const [utilName, ...args] = executable.split(' ');
+      const [utilName, ...args] = executable?.split(' ');
       const util = COMMANDS[utilName];
       switch (true) {
         case utilName === 'history':
@@ -44,7 +44,9 @@ export function Terminal(props: { fs: FileSystem }) {
           }
           break;
         default:
-          output = `Command "${utilName}" doesn't exist<br>Type 'help' to know more`;
+          if (executable) {
+            output = `Command "${utilName}" doesn't exist<br>Type 'help' to know more`;
+          }
           setHistory((prev) => [...prev, {command, output, key: v4()}]);
           break;
       }
@@ -56,7 +58,9 @@ export function Terminal(props: { fs: FileSystem }) {
       }
       setHistory((prev) => [...prev, {command, output, key: v4()}]);
     }
-    setUsedCommands((prev) => [...prev, executable]);
+    if (executable) {
+      setUsedCommands((prev) => [...prev, executable]);
+    }
   }
 
   function handleAutocomplete(executable: string): void {
@@ -73,6 +77,7 @@ export function Terminal(props: { fs: FileSystem }) {
         autocomplete={handleAutocomplete}
         autocompletedCommand={autocompletedCommand}
         usedCommands={usedCommands}
+        selftypingMessages={props.selftypingMessages}
       />
     </div>
   );

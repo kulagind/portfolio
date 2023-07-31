@@ -10,7 +10,7 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Terminal fs={fs} />
+      <Terminal fs={fs} selftypingMessages={['Wake up, Neo!', 'Time to code!']} />
     </main>
   );
 }

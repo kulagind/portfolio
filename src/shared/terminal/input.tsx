@@ -1,6 +1,7 @@
 'use client';
 
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { generateMessage } from '../utils/artificial-typing';
 import './terminal.css';
 
 export function Input(props: {
@@ -9,6 +10,7 @@ export function Input(props: {
   autocomplete: (executable: string) => void,
   autocompletedCommand: string[],
   usedCommands: string[],
+  selftypingMessages: string[];
 }) {
   const [command, setCommand] = useState('');
   const [autocompleteIndex, setAutocompleteIndex] = useState(-1);
@@ -16,6 +18,42 @@ export function Input(props: {
   const input = useRef();
 
   const MACHINE_NAME = 'user@localhost';
+
+  useEffect(() => {
+    const generate = async () => {
+      for await (const message of props.selftypingMessages) {
+        let currentMessage = '';
+        for await (const next of generateMessage(message)) {
+          setCommand(next);
+          currentMessage = next;
+        }
+        onEnterPressed(currentMessage);
+      }
+    };
+    generate();
+  }, [props.selftypingMessages]);
+
+  useEffect(() => {
+    const listener = () => {
+      // @ts-ignore
+      input.current.focus();
+    };
+    window.addEventListener('keydown', listener);
+    return () => window.removeEventListener('keydown', listener);
+  }, []);
+
+  useEffect(() => {
+    if (props.autocompletedCommand.length) {
+      setCommand(updatePath);
+      setAutocompleteIndex(0);
+    }
+  }, [props.autocompletedCommand]);
+
+  function onEnterPressed(message?: string) {
+    props.executeCommand(message ? message : `${MACHINE_NAME}:${props.path}$ ${command}`, message ? '' : command);
+    setCommand('');
+    setAutocompleteIndex(-1);
+  }
 
   function updatePath(prev: string, index = 0): string {
     const tmpUtil = prev.split(' ');
@@ -26,22 +64,6 @@ export function Input(props: {
     tmpArg.push(props.autocompletedCommand[index]);
     return `${tmpUtil.join(' ')}${tmpUtil.length ? ' ' : ''}${tmpArg.join('/')}`;
   }
-
-  useEffect(() => {
-    const listener = () => {
-      // @ts-ignore
-      input.current.focus();
-    };
-    window.addEventListener('keydown', listener);
-    return () => window.removeEventListener('keydown', listener);
-  });
-
-  useEffect(() => {
-    if (props.autocompletedCommand.length) {
-      setCommand(updatePath);
-      setAutocompleteIndex(0);
-    }
-  }, [props.autocompletedCommand]);
 
   function handleKeyDown(e: KeyboardEvent) {
     switch (true) {
@@ -67,9 +89,7 @@ export function Input(props: {
         break;
       case e.code === 'Enter':
         e.preventDefault();
-        props.executeCommand(`${MACHINE_NAME}:${props.path}$ ${command}`, command);
-        setCommand('');
-        setAutocompleteIndex(-1);
+        onEnterPressed();
         break;
       case e.code === 'Tab':
         e.preventDefault();
