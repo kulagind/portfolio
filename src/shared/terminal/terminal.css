@@ -6,6 +6,10 @@
     overflow: auto;
 }
 
+.terminal * {
+    cursor: default !important;
+}
+
 .terminal__active-row {
     display: flex;
 }
@@ -26,4 +30,9 @@
 
 .history {
     opacity: 0.8;
+}
+
+.history-item {
+    width: 100%;
+    word-wrap: break-word;
 }

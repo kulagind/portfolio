@@ -1,5 +1,8 @@
+'use client';
+
 import axios from 'axios';
 import { FileSystem } from '../../models/file-system';
+import { themeSignal, validityTheme } from '../utils/theme';
 
 export interface CommandsHistory {
   key: string;
@@ -21,7 +24,8 @@ export const COMMANDS: {
         cd [dir] - change directory,<br>
         cat [dir] - show file content,<br>
         clear - clear workspace,<br>
-        history - list of previous commands
+        history - list of previous commands,<br>
+        switch [dark | light] - switch styling
     `;
   },
   'ls': (fs, args) => {
@@ -35,5 +39,13 @@ export const COMMANDS: {
     const path = fs.getContentRealPath(args[0]);
     const {data} = await axios.get(path);
     return data;
+  },
+  'theme': (_, args) => {
+    const theme = validityTheme(args[0]);
+    if (!theme) {
+      return `Value must be either 'light' or 'dark'`;
+    }
+    themeSignal.value = theme;
+    return `Switched to ${theme}`;
   },
 };

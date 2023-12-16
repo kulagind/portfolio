@@ -15,11 +15,17 @@ export function Input(props: {
   const [command, setCommand] = useState('');
   const [autocompleteIndex, setAutocompleteIndex] = useState(-1);
   const [usedCommandIndex, setUsedCommandsIndex] = useState(-1);
+  const [processing, setProcessing] = useState(false);
   const input = useRef();
 
   const MACHINE_NAME = 'user@localhost';
 
   useEffect(() => {
+    if (processing) {
+      return;
+    }
+    setProcessing(true);
+
     const generate = async () => {
       for await (const message of props.selftypingMessages) {
         let currentMessage = '';
@@ -29,6 +35,7 @@ export function Input(props: {
         }
         onEnterPressed(currentMessage);
       }
+      setProcessing(false);
     };
     generate();
   }, [props.selftypingMessages]);
@@ -50,7 +57,15 @@ export function Input(props: {
   }, [props.autocompletedCommand]);
 
   function onEnterPressed(message?: string) {
-    props.executeCommand(message ? message : `${MACHINE_NAME}:${props.path}$ ${command}`, message ? '' : command);
+    let trimmedMessage = message?.trim() ?? '';
+    props.executeCommand(
+      trimmedMessage
+        ? trimmedMessage
+        : `${MACHINE_NAME}:${props.path}$ ${command?.trim()}`,
+      trimmedMessage
+        ? ''
+        : command?.trim(),
+    );
     setCommand('');
     setAutocompleteIndex(-1);
   }
@@ -106,7 +121,7 @@ export function Input(props: {
               });
             }
           } else {
-            props.autocomplete(command);
+            props.autocomplete(command.trim());
           }
         }
         break;
@@ -133,7 +148,7 @@ export function Input(props: {
         {MACHINE_NAME}:{props.path}$&nbsp;
       </div>
       <div className="active-row__input">
-        <input ref={input} onKeyDown={handleKeyDown} onChange={handleChange} value={command} />
+        <input ref={input} onKeyDown={handleKeyDown} onChange={handleChange} value={command} disabled={processing} />
       </div>
     </div>
   );

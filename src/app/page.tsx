@@ -10,7 +10,12 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Terminal fs={fs} selftypingMessages={['Wake up, Neo!', 'Time to code!']} />
+      <Terminal
+        fs={fs} selftypingMessages={[
+        // 'Wake up, Neo!',
+        // 'There are 2 modes of the app: CLI and UI. Choose one.',
+      ]}
+      />
     </main>
   );
 }

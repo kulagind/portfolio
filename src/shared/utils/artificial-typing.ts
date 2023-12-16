@@ -5,7 +5,7 @@ export async function* generateMessage(message: string) {
     yield await new Promise<string>((resolve) => {
       setTimeout(() => {
         resolve(result);
-      }, getRandomNumber(50, 200));
+      }, getRandomNumber(30, 200));
     });
   }
 }
