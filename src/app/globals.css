@@ -32,3 +32,50 @@ body {
     box-sizing: border-box;
     /*transition: all .1s linear;*/
 }
+
+.canvas-theme-container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+.canvas-theme-layout {
+    position: fixed;
+    width: 100vw !important;
+    height: 100%;
+    left: 0;
+    bottom: 0;
+}
+
+.animate-moveleft {
+    animation-duration: .7s;
+    animation-name: moveleft;
+    animation-timing-function: linear;
+}
+
+.animate-moveright {
+    animation-duration: .7s;
+    animation-name: moveright;
+    animation-timing-function: linear;
+}
+
+@keyframes moveright {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(100vw);
+    }
+}
+
+@keyframes moveleft {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100vw);
+    }
+}

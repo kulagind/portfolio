@@ -5,6 +5,7 @@ import html2canvas from 'html2canvas';
 import { JetBrains_Mono } from 'next/font/google';
 import React, { useEffect, useState } from 'react';
 import './globals.css';
+import { animateTheme } from '../shared/utils/animate-theme';
 import { Theme, THEME_ATTR, themeChanged, themeSignal } from '../shared/utils/theme';
 
 const font = JetBrains_Mono({subsets: ['latin']});
@@ -25,25 +26,7 @@ export default function RootLayout({
         setTimeout(() => {
           html2canvas(document.body)
             .then((canvas) => {
-              const container = document.createElement('div');
-              container.style.position = 'fixed';
-              container.style.width = '100vw';
-              container.style.height = '100vh';
-              container.style.left = '0';
-              container.style.top = '0';
-              container.style.overflow = 'hidden';
-
-              canvas.style.position = 'fixed';
-              canvas.style.width = '100vw';
-              canvas.style.height = '100vh';
-              canvas.style.left = '0';
-              canvas.style.top = '0';
-
-              container.append(canvas);
-
-              requestAnimationFrame(() => {
-                document.body.appendChild(container);
-              });
+              animateTheme(canvas);
             })
             .then(() => {
               setTheme(themeSignal.value ?? 'dark');

@@ -57,6 +57,10 @@ export function Terminal(props: { fs: FileSystem, selftypingMessages: string[] }
         output = 'Unexpected error';
       }
       setHistory((prev) => [...prev, {command, output, key: v4()}]);
+    } finally {
+      requestAnimationFrame(() => {
+        window.scroll(0, document.body.scrollHeight);
+      });
     }
     if (executable) {
       setUsedCommands((prev) => [...prev, executable]);
